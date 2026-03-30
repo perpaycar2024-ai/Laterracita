@@ -398,7 +398,7 @@ let currentFichaId = null;
 
 // Sistema de apertura robusto
 function iniciarApp() {
-    const request = indexedDB.open('JardinRaulDB', 3); // Versión 3 para forzar limpieza
+    const request = indexedDB.open('terracitaDB', 3); // Versión 3 para forzar limpieza
 
 
     request.onupgradeneeded = e => {
