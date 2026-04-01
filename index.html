@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+ú﻿<!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -748,6 +748,20 @@ function exportarBackup() {
   const reader = new FileReader();
   reader.onload = e => {
     const backup = JSON.parse(e.target.result);
+    if (backup.zonas) {
+    estado = backup;
+} else if (backup.datos) {
+    estado = backup.datos;
+} else {
+    alert('❌ Formato de backup no válido');
+    return;
+}
+
+// === LO QUE FALTA PARA QUE SURTA EFECTO ===
+localStorage.setItem(STORAGE_KEY, JSON.stringify(estado));
+alert('✅ ¡Datos restaurados con éxito!');
+location.reload(); // Esto recarga la PWA para mostrar los cambios
+
     const tx = db.transaction(['plantas','config'], 'readwrite');
     backup.plantas.forEach(p => tx.objectStore('plantas').put(p));
     tx.objectStore('config').put({ id:'zonas', lista: backup.zonas });
