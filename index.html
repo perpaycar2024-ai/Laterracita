@@ -585,10 +585,8 @@ function addNota() {
 }
 
 
-function regarYa() { updatePlantaData(p => p.lastWatered = new Date().toISOString(), () => abrirFicha(currentFichaId)); }
-function abonarYa() {
-    const abonoUsado = document.getElementById('tipo-abono-input').value || 'Genérico';
-    updatePlantaData(p => { p.lastFertilized = new Date().toISOString(); p.ultimoAbonoUsado = abonoUsado; }, () => { document.getElementById('tipo-abono-input').value = ''; abrirFicha(currentFichaId); });
+function function regarYa() { updatePlantaData(p => { p.lastWatered = new Date().toISOString(); p.fechaRiego = new Date().toLocaleDateString('es-ES', {day:'2-digit', month:'2-digit'}); }, () => abrirFicha(currentFichaId)); }
+function function abonarYa() { const abonoUsado = document.getElementById('tipo-abono-input').value || 'Genérico'; updatePlantaData(p => { p.lastFertilized = new Date().toISOString(); p.ultimoAbonoUsado = abonoUsado; p.fechaAbono = new Date().toLocaleDateString('es-ES', {day:'2-digit', month:'2-digit'}); }, () => abrirFicha(currentFichaId)); }
 }
 
 
@@ -693,8 +691,8 @@ function renderLista() {
                 <div class="p-info-mini">
                     <div class="p-nom">${p.name}</div>
                     <div class="p-meta">
-                        <span style="color:var(--agua)">💧${daysSince(p.lastWatered)}</span>
-                        <span style="color:var(--abono)">🌿${daysSince(p.lastFertilized)}</span>
+                        <span style="color:var(--agua)">💧${daysSince(p.lastWatered)} <small style="opacity:0.6;font-size:0.8em">(${p.fechaRiego || '--/--'})</small></span>
+                        <span style="color:var(--abono)">🌿${daysSince(p.lastFertilized)} <small style="opacity:0.6;font-size:0.8em">(${p.fechaAbono || '--/--'})</small></span>
                      </div>
                     </div>
                 </div>
