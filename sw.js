@@ -1,4 +1,4 @@
-// VERSIÓN 8 — fuerza actualización borrando cachés anteriores
+// VERSIÓN 9 — fuerza actualización borrando cachés anteriores
 const CACHE_NAME = 'jardin-raul-v4';
 const ASSETS = [
   './Index.html',
