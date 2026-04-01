@@ -736,46 +736,54 @@ function exportarBackup() {
     tx.objectStore('plantas').getAll().onsuccess = e => {
         e.target.result.forEach(p => plantas.push(p));
         tx.objectStore('config').get('zonas').onsuccess = ev => {
-            const backup = { fecha: new Date().toISOString(), zonas: ev.target.result?.lista || [], plantas };
+            const backup = { 
+                fecha: new Date().toISOString(), 
+                zonas: ev.target.result ? ev.target.result.lista : [], 
+                plantas: plantas 
+            };
             const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
-            a.href = url; a.download = `jardin-backup-${new Date().toISOString().slice(0,10)}.json`;
-            a.click(); URL.revokeObjectURL(url);
-          function importarBackup(input) {
-  const file = input.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = e => {
-    const backup = JSON.parse(e.target.result);
-    if (backup.zonas) {
-    estado = backup;
-} else if (backup.datos) {
-    estado = backup.datos;
-} else {
-    alert('❌ Formato de backup no válido');
-    return;
-}
-
-// === LO QUE FALTA PARA QUE SURTA EFECTO ===
-localStorage.setItem(STORAGE_KEY, JSON.stringify(estado));
-alert('✅ ¡Datos restaurados con éxito!');
-location.reload(); // Esto recarga la PWA para mostrar los cambios
-
-    const tx = db.transaction(['plantas','config'], 'readwrite');
-    backup.plantas.forEach(p => tx.objectStore('plantas').put(p));
-    tx.objectStore('config').put({ id:'zonas', lista: backup.zonas });
-    tx.oncomplete = () => { alert('✅ Backup restaurado'); renderLista(); };
-  };
-  reader.readAsText(file);
-}
+            a.href = url;
+            a.download = `jardin-backup-${new Date().toISOString().slice(0,10)}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
         };
     };
-}
+} // <--- AQUÍ FALTABA ESTE CIERRE EN TU CAPTURA
 
+// ===== BACKUP IMPORTAR =====
+function importarBackup(input) {
+    const file = input.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = e => {
+        try {
+            const backup = JSON.parse(e.target.result);
+            const tx = db.transaction(['plantas', 'config'], 'readwrite');
+            
+            // Restaurar plantas
+            if (backup.plantas) {
+                backup.plantas.forEach(p => tx.objectStore('plantas').put(p));
+            }
+            
+            // Restaurar zonas
+            if (backup.zonas) {
+                tx.objectStore('config').put({ id: 'zonas', lista: backup.zonas });
+            }
+
+            tx.oncomplete = () => {
+                alert('✅ Backup restaurado con éxito');
+                location.reload(); // Recarga para ver los cambios
+            };
+        } catch (err) {
+            alert('❌ Error al procesar el archivo');
+            console.error(err);
+        }
+    };
+    reader.readAsText(file);
+}
 
 // Arrancamos
 iniciarApp();
-</script>
-</body>
-</html>
