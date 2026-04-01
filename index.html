@@ -584,9 +584,20 @@ function addNota() {
     }, () => { document.getElementById('nueva-nota').value=''; abrirFicha(currentFichaId); });
 }
 
+function regarYa() { 
+    updatePlantaData(p => { 
+        p.lastWatered = new Date().toISOString(); 
+        p.fechaRiego = new Date().toLocaleDateString('es-ES', {day:'2-digit', month:'2-digit'}); 
+    }, () => abrirFicha(currentFichaId)); 
+}
 
-function function regarYa() { updatePlantaData(p => { p.lastWatered = new Date().toISOString(); p.fechaRiego = new Date().toLocaleDateString('es-ES', {day:'2-digit', month:'2-digit'}); }, () => abrirFicha(currentFichaId)); }
-function function abonarYa() { const abonoUsado = document.getElementById('tipo-abono-input').value || 'Genérico'; updatePlantaData(p => { p.lastFertilized = new Date().toISOString(); p.ultimoAbonoUsado = abonoUsado; p.fechaAbono = new Date().toLocaleDateString('es-ES', {day:'2-digit', month:'2-digit'}); }, () => abrirFicha(currentFichaId)); }
+function abonarYa() { 
+    const abonoUsado = document.getElementById('tipo-abono-input').value || 'Genérico'; 
+    updatePlantaData(p => { 
+        p.lastFertilized = new Date().toISOString(); 
+        p.ultimoAbonoUsado = abonoUsado; 
+        p.fechaAbono = new Date().toLocaleDateString('es-ES', {day:'2-digit', month:'2-digit'}); 
+    }, () => abrirFicha(currentFichaId)); 
 }
 
 
