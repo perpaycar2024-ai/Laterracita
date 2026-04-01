@@ -304,6 +304,8 @@ input, select {
     <button onclick="addZona()" class="btn-accion" style="background:var(--verde-escarcha); color:var(--oliva-dark);">AÑADIR ZONA</button>
     <button onclick="cerrarModalZonas()" style="width:100%; background:none; border:none; color:white; margin-top:15px; font-size:0.8rem;">CERRAR</button>
     <button onclick="exportarBackup()" style="width:100%; background:none; border:none; color:var(--verde-escarcha); margin-top:8px; font-size:0.75rem; opacity:0.7;">⬇️ Exportar backup JSON</button>
+ <input type="file" accept=".json" id="input-backup" style="display:none" onchange="importarBackup(this)">
+<button onclick="document.getElementById('input-backup').click()" style="width:100%; background:none; border:none; color:var(--verde-escarcha); margin-top:8px; font-size:0.75rem; opacity:0.7;">⬆️ Importar backup</button>
   </div>
 </div>
 
@@ -740,6 +742,19 @@ function exportarBackup() {
             const a = document.createElement('a');
             a.href = url; a.download = `jardin-backup-${new Date().toISOString().slice(0,10)}.json`;
             a.click(); URL.revokeObjectURL(url);
+          function importarBackup(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const backup = JSON.parse(e.target.result);
+    const tx = db.transaction(['plantas','config'], 'readwrite');
+    backup.plantas.forEach(p => tx.objectStore('plantas').put(p));
+    tx.objectStore('config').put({ id:'zonas', lista: backup.zonas });
+    tx.oncomplete = () => { alert('✅ Backup restaurado'); renderLista(); };
+  };
+  reader.readAsText(file);
+}
         };
     };
 }
