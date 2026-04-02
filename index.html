@@ -734,10 +734,19 @@ function abrirFicha(id) {
             imgEl.style.display = 'none';
             emojiEl.style.display = 'flex';
             emojiEl.textContent = p.emoji || '🪴';
-        }
-        document.getElementById('info-riego').innerText = `Último riego: hace ${daysSince(p.lastWatered)} días`;
-        document.getElementById('info-abono').innerHTML = `Último abono: hace ${daysSince(p.lastFertilized)} días <br><small style="opacity:0.6;">Tipo: ${p.ultimoAbonoUsado || '-'}</small>`;
-        renderNotas(p.notas || []);
+  }
+             // Reemplazo para líneas 738 y 739
+        document.getElementById('info-riego').innerHTML = `
+            <div style="font-size: 1.2em; margin-bottom: 4px;">💧 Hace <b>${daysSince(p.lastWatered)}</b> días</div>
+            <div style="font-size: 1.1em; color: var(--agua); font-weight: bold;">Fecha: ${p.fechaRiego || '--/--'}</div>
+        `;
+        document.getElementById('info-abono').innerHTML = `
+            <div style="font-size: 1.2em; margin-bottom: 4px;">🌿 Hace <b>${daysSince(p.lastFertilized)}</b> días</div>
+            <div style="font-size: 1.1em; color: var(--abono); font-weight: bold;">Fecha: ${p.fechaAbono || '--/--'}</div>
+            <div style="margin-top: 4px; opacity: 0.8;">Tipo: ${p.ultimoAbonoUsado || 'Genérico'}</div>
+        `;
+
+      renderNotas(p.notas || []);
         document.getElementById('vista-ficha').style.display = 'block';
     };
 }
